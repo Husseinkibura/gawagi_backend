@@ -53,17 +53,25 @@ export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
+    console.log("Login request received:", { username, password }); // Log the request payload
+
     // Find the user by username
     const user = await User.findByUsername(username);
     if (!user) {
+      console.log("User not found:", username); // Log if user is not found
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
+    console.log("User found:", user); // Log the user object
 
     // Compare the password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log("Password comparison failed for user:", username); // Log if password comparison fails
       return res.status(400).json({ message: "Invalid credentials" });
     }
+
+    console.log("Password comparison successful for user:", username); // Log if password comparison succeeds
 
     // Generate a JWT token
     const token = jwt.sign(
@@ -72,11 +80,14 @@ export const login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
+    console.log("Token generated for user:", user.username); // Log the generated token
+
     res.json({
       token,
       user: { id: user.id, username: user.username, role: user.role },
     });
   } catch (error) {
+    console.error("Login error:", error); // Log any errors
     res.status(500).json({ message: error.message });
   }
 };
