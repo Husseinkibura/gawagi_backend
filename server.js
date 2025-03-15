@@ -29,18 +29,28 @@ import testsRoutes from './routes/testsRoutes.js';
 import billingRoutes from './routes/billingRoutes.js';
 import feedbackRoutes from './routes/feedbackRoutes.js';
 
+// Load environment variables
 dotenv.config();
+
+// Debug: Log database credentials
+console.log('Database Credentials:', {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // Allow frontend to connect
+    origin: 'https://gawagidispensary.com', // Allow frontend to connect
     methods: ['GET', 'POST'],
   },
 });
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: 'https://gawagidispensary.com', credentials: true }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 
