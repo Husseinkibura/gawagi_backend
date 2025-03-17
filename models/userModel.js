@@ -1,3 +1,5 @@
+// models/userModel.js
+
 import pool from "../config/db.js";
 import bcrypt from "bcryptjs";
 
@@ -62,39 +64,73 @@ export default class User {
     return rows[0]; // Return the first user found
   }
 
-  static async createUser({
-    fullname,
-    username,
-    password,
-    email,
-    profileImage,
-    address,
-    DateOfBirth,
-    role,
-    patientId,
-    age,
-    Contract,
-    Salary,
-  }) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await pool.query(
-      "INSERT INTO users (fullname, username, password, email, profileImage, address, DateOfBirth, role, patientId, age, Contract, Salary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        fullname,
-        username,
-        hashedPassword,
-        email,
-        profileImage,
-        address,
-        DateOfBirth,
-        role,
-        patientId,
-        age, // Ensure age is a number
-        Contract,
-        Salary, // Ensure Salary is a number
-      ]
-    );
-  }
+// static async createUser({
+//   fullname,
+//   username,
+//   password,
+//   email,
+//   profileImage,
+//   address,
+//   DateOfBirth,
+//   role,
+//   patientId,
+//   age,
+//   Contract,
+//   Salary,
+// }) {
+//   const hashedPassword = await bcrypt.hash(password, 10);
+//   await pool.query(
+//     "INSERT INTO users (fullname, username, password, email, profileImage, address, DateOfBirth, role, patientId, age, Contract, Salary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+//     [
+//       fullname,
+//       username,
+//       hashedPassword,
+//       email,
+//       profileImage,
+//       address,
+//       DateOfBirth,
+//       role,
+//       patientId,
+//       age,
+//       Contract,
+//       Salary,
+//     ]
+//   );
+// }
+
+static async createUser({
+  fullname,
+  username,
+  password,
+  email,
+  profileImage,
+  address,
+  DateOfBirth,
+  role,
+  patientId,
+  age,
+  Contract,
+  Salary,
+}) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  await pool.query(
+    "INSERT INTO users (fullname, username, password, email, profileImage, address, DateOfBirth, role, patientId, age, Contract, Salary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    [
+      fullname,
+      username,
+      hashedPassword,
+      email,
+      profileImage,
+      address,
+      DateOfBirth,
+      role,
+      patientId || null, // Ensure patientId is null if not provided
+      age || null, // Ensure age is null if not provided
+      Contract || null, // Ensure Contract is null if not provided
+      Salary || null, // Ensure Salary is null if not provided
+    ]
+  );
+}
 
   static async getUsersByRole(role) {
     const [rows] = await pool.query("SELECT * FROM users WHERE role = ?", [role]);
